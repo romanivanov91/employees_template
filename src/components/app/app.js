@@ -19,7 +19,9 @@ class App extends Component {
         {name: "Кириллов И.", salary: 1500, increase: false, star: false, id:3}
       ],
       term: "",//переменная для поиска
-      filter: "all"//переменная для фильтра
+      filter: "all",//переменная для фильтра
+      error: "Введите числовое значение!!!",
+      // display: "d-none"
     }
     this.maxId = 4;//Добавляем идентификатор нового сотрудника
   }
@@ -152,9 +154,24 @@ class App extends Component {
   //   })
   // }
 
-  //Меняем в state значение filter. Значение придет из app-filter
+  //Меняем в state значение filter для того чтобы отфильтровать массив. Значение придет из app-filter
   onFilterSelect = (filter) => {
     this.setState(({filter}));
+  }
+
+  //Изменение зарплаты из интпута с зарплатой
+  onSalaryChange = (id, value) => {
+    if (!(isNaN(value))) {
+      this.setState(({data}) => ({
+        //Перебираем массив с помощью метода map. В нем если id совпадет с id одного из перебираемых обьектов, то изменяем свойства этого обьекта и перезаписываем его. Остальные обьекты остаются без изменений
+        data: data.map(item => {
+          if (item.id === id) {
+            return {...item, salary: value}
+          }
+          return item;
+        })
+      }))
+    }
   }
 
   render() {
@@ -162,7 +179,7 @@ class App extends Component {
     const {data, term, filter} = this.state;
     const numberOfEmployees = this.state.data.length;
     const increaseOfEmployees = this.state.data.filter(item => item.increase === true).length;
-    const visibleData = this.filterPost(this.searchEmp(data, term), filter);//Как оргумент передаем отфильтрованный по поиску массив, а filter берем из state 
+    const visibleData = this.filterPost(this.searchEmp(data, term), filter);//Как оргумент передаем отфильтрованный по поиску массив, а filter берем из state
 
     return (
       <div className="app">
@@ -178,7 +195,8 @@ class App extends Component {
           <EmployeesList 
               data={visibleData}
               onDelete={this.deleteItem}
-              onToggleProp={this.onToggleProp}/>
+              onToggleProp={this.onToggleProp}
+              onSalaryChange={this.onSalaryChange}/>
           <EmployeesAddForm
               onAdd={this.addItem}/>
       </div>

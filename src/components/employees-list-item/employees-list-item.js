@@ -1,15 +1,41 @@
+import { Component } from 'react';
 import './employees-list-item.css';
 
-const EmployeesListItem = (props) => {
+class EmployeesListItem extends Component{
+    constructor (props) {
+        super(props);
+        this.state = {
+            classError: 'error d-none'
+        }
+    }
+
+    onSalaryChange = (e) => {
+      if (isNaN(e.target.value)) {
+            this.setState(({classError}) => {
+            return {
+            classError: 'error d-block'
+            }
+          })
+      } else {
+            console.log(this.props.item.id);
+            this.setState(({classError}) => {
+            this.props.onSalaryChange(this.props.item.id, e.target.value);
+            return {
+                classError: 'error d-none'
+                }
+          })
+      }
+    }
    
-    const {name, salary, onDelete, onToggleProp, increase, star} = props;
+   render () {
+    const {name, salary, onDelete, onToggleProp, increase, star, onSalaryChange} = this.props;
     //Переменная с текстом класса для элемента списка
     let classNames = "list-group-item d-flex justify-content-between";
     //Условие добавляющее или убирающее класс increase (подсветка желтым сотрудника)
     if (increase) {
         classNames += " increase"
     }
-    ////Условие добавляющее или убирающее класс like (добавляет сотруднику звездочку)
+    //Условие добавляющее или убирающее класс like (добавляет сотруднику звездочку)
     if (star) {
         classNames += " like"
     }
@@ -17,7 +43,8 @@ const EmployeesListItem = (props) => {
     return (
         <li className={classNames}>
             <span onClick={onToggleProp} className="list-group-item-label" data-toggle="star">{name}</span>
-            <input type="text" className="list-group-item-input" defaultValue={salary + "$"}/>
+            <p className={this.state.classError}>Введите числовое значение!!!</p>
+            <input type="text" className="list-group-item-input" defaultValue={salary + "$"} onChange={this.onSalaryChange}/>
             <div className='d-flex justify-content-center align-items-center'>
                <button type="button"
                     className="btn-cookie btn-sm "
@@ -35,11 +62,12 @@ const EmployeesListItem = (props) => {
             </div>
         </li>
         )
+   }
     }
 
 export default EmployeesListItem;
 
-// // Старый вариант
+// // Старый вариант с компонетом React
 // class EmployeesListItem extends Component {
 //     constructor (props) {
 //         super(props);
