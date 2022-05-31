@@ -4,7 +4,7 @@ import './employees-list.css';
 
 const EmployeesList = ({data, onDelete, onToggleProp, onSalaryChange}) => {
     //С помощью метода перебора map (перебирает массив и возвращает новый массив с новыми данными) выводим каждого сотрудника на страницу
-    const elements = data.map(item => {
+    const elements = data.map((item, index) => {
         const {id, name, salary, increase, star} = item
         return (
             <EmployeesListItem key={id} 
@@ -15,9 +15,11 @@ const EmployeesList = ({data, onDelete, onToggleProp, onSalaryChange}) => {
                                 onDelete={()=>onDelete(id)}
                                 onToggleProp={(e)=>onToggleProp(id, e.currentTarget.getAttribute('data-toggle'))}
                                 onSalaryChange={(id, value) => onSalaryChange(id, value)}
-                                item={data[id-1]}/>
+                                item={data[index]}/>
         );
     });
+
+    console.log(elements);
 
     return (
         <ul className="app-list list-group">
